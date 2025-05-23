@@ -1,118 +1,186 @@
 import { useState, useEffect } from 'react';
-import Card from '../ui/Card';
+import { 
+  Home, 
+  Settings, 
+  Wrench, 
+  RefreshCw, 
+  Layout, 
+  Sliders,
+  ChevronRight,
+  DollarSign,
+  BarChart3,
+  Users
+} from 'lucide-react';
 
-export default function Dashboard() {
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalOrders: 0,
-    revenue: 0
-  });
+// Card component
+const Card = ({ children, className = "", onClick }) => {
+  return (
+    <div 
+      className={`bg-white rounded-lg shadow-md border border-gray-200 ${className} ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow duration-200' : ''}`}
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
+};
 
-  useEffect(() => {
-    // Simulate loading stats - replace with actual API calls
-    setStats({
-      totalUsers: 1250,
-      totalOrders: 342,
-      revenue: 15750
-    });
-  }, []);
+// Settings card component
+const SettingsCard = ({ icon: Icon, title, description, onClick }) => {
+  return (
+    <Card onClick={onClick} className="p-6 hover:border-blue-300">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Icon className="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          </div>
+        </div>
+        <ChevronRight className="w-5 h-5 text-gray-400" />
+      </div>
+    </Card>
+  );
+};
+
+// Stats card component
+const StatsCard = ({ icon: Icon, title, value, color = "blue" }) => {
+  const colorClasses = {
+    blue: "bg-blue-100 text-blue-600",
+    green: "bg-green-100 text-green-600",
+    purple: "bg-purple-100 text-purple-600"
+  };
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Welcome to your admin dashboard
-        </p>
+    <Card className="p-6">
+      <div className="flex items-center">
+        <div className="flex-shrink-0">
+          <div className={`w-12 h-12 ${colorClasses[color]} rounded-lg flex items-center justify-center`}>
+            <Icon className="w-6 h-6" />
+          </div>
+        </div>
+        <div className="ml-4">
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        </div>
       </div>
+    </Card>
+  );
+};
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card>
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+export default function Dashboard() {
+  const handleSettingClick = (settingName) => {
+    console.log(`Navigate to ${settingName} settings`);
+    // Add your navigation logic here
+  };
+
+  const settingsCards = [
+    {
+      icon: Home,
+      title: "Homepage Settings",
+      description: "Configure homepage layout, hero section, and featured content",
+      key: "homepage"
+    },
+    {
+      icon: Wrench,
+      title: "Tools Page Settings",
+      description: "Manage tools display, categories, and tool configurations",
+      key: "tools"
+    },
+    {
+      icon: RefreshCw,
+      title: "Convert Page Settings",
+      description: "Setup conversion tools, formats, and processing options",
+      key: "convert"
+    },
+    {
+      icon: Layout,
+      title: "Footer Settings",
+      description: "Edit footer links, contact information, and social media",
+      key: "footer"
+    },
+    {
+      icon: Sliders,
+      title: "Default Settings",
+      description: "Configure global defaults, system preferences, and general options",
+      key: "default"
+    },
+    {
+      icon: DollarSign,
+      title: "AdSense Setup",
+      description: "Configure Google AdSense integration and ad placements",
+      key: "adsense"
+    },
+    {
+      icon: Settings,
+      title: "Default Ads",
+      description: "Manage default advertisements and fallback ad content",
+      key: "defaultads"
+    },
+    {
+      icon: BarChart3,
+      title: "Analytics",
+      description: "Setup Google Analytics, tracking codes, and performance monitoring",
+      key: "analytics"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Settings Section */}
+        <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {settingsCards.map((setting) => (
+              <SettingsCard
+                key={setting.key}
+                icon={setting.icon}
+                title={setting.title}
+                description={setting.description}
+                onClick={() => handleSettingClick(setting.key)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+              <div className="text-center">
+                <Settings className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-gray-900">System Settings</p>
               </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.totalUsers.toLocaleString()}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center jewelry-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
+            </Card>
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+              <div className="text-center">
+                <DollarSign className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-gray-900">Ad Management</p>
               </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.totalOrders.toLocaleString()}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
-                </svg>
+            </Card>
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+              <div className="text-center">
+                <BarChart3 className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-gray-900">View Analytics</p>
               </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Revenue</p>
-              <p className="text-2xl font-semibold text-gray-900">${stats.revenue.toLocaleString()}</p>
-            </div>
+            </Card>
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+              <div className="text-center">
+                <Layout className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-gray-900">Content Manager</p>
+              </div>
+            </Card>
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+              <div className="text-center">
+                <Sliders className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-gray-900">Advanced Config</p>
+              </div>
+            </Card>
           </div>
-        </Card>
-      </div>
-
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Recent Activity">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm text-gray-600">New user registered</span>
-              <span className="text-xs text-gray-400">2 minutes ago</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-sm text-gray-600">Order #1234 completed</span>
-              <span className="text-xs text-gray-400">5 minutes ago</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-              <span className="text-sm text-gray-600">Payment processed</span>
-              <span className="text-xs text-gray-400">10 minutes ago</span>
-            </div>
-          </div>
-        </Card>
-
-        <Card title="Quick Actions">
-          <div className="space-y-3">
-            <button className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700">
-              View All Users
-            </button>
-            <button className="w-full text-left px-4 py-2 bg-green-50 hover:bg-green-100 rounded-md text-green-700">
-              Manage Orders
-            </button>
-            <button className="w-full text-left px-4 py-2 bg-purple-50 hover:bg-purple-100 rounded-md text-purple-700">
-              Generate Reports
-            </button>
-          </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

@@ -29,12 +29,11 @@ async function createAdmin() {
     const client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();
     console.log('✅ Connected to MongoDB');
-    
-    const db = client.db();
 
+    const db = client.db('foxbeep');
     // Check if admin already exists
     const existingAdmin = await db.collection('admins').findOne({ email });
-    
+
     if (existingAdmin) {
       console.log('⚠️  Admin user with this email already exists');
       rl.close();
@@ -43,7 +42,7 @@ async function createAdmin() {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    
+
     const result = await db.collection('admins').insertOne({
       email,
       password: hashedPassword,
@@ -60,7 +59,7 @@ async function createAdmin() {
     console.log('🔑 Password:', password);
     console.log('🆔 Admin ID:', result.insertedId);
     console.log('\n🌐 You can now login at: http://localhost:3000/admin/login');
-    
+
     rl.close();
     await client.close();
   } catch (error) {

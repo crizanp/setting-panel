@@ -145,14 +145,7 @@ export default function LoginForm() {
             </Button>
           </form>
           
-          {/* Debug info - remove in production */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="mt-4 p-3 bg-gray-100 rounded text-xs">
-              <p><strong>Debug Info:</strong></p>
-              <p>Default login: admin@example.com / admin123</p>
-              <p>Check browser console for detailed logs</p>
-            </div>
-          )}
+         
         </Card>
       </div>
     </div>

@@ -1,19 +1,24 @@
+// models/Admin.js
+
 import clientPromise from '../lib/mongodb';
 import bcrypt from 'bcryptjs';
 
 export class Admin {
-  static async findByEmail(email) {
+  static async getDb() {
     const client = await clientPromise;
-    const db = client.db();
+    return client.db('foxbeep'); // Use the 'foxbeep' DB explicitly
+  }
+
+  static async findByEmail(email) {
+    const db = await this.getDb();
     return await db.collection('admins').findOne({ email });
   }
 
   static async create(adminData) {
-    const client = await clientPromise;
-    const db = client.db();
-    
+    const db = await this.getDb();
+
     const hashedPassword = await bcrypt.hash(adminData.password, 12);
-    
+
     const admin = {
       ...adminData,
       password: hashedPassword,
@@ -26,15 +31,14 @@ export class Admin {
   }
 
   static async updatePassword(email, newPassword) {
-    const client = await clientPromise;
-    const db = client.db();
-    
+    const db = await this.getDb();
+
     const hashedPassword = await bcrypt.hash(newPassword, 12);
-    
+
     return await db.collection('admins').updateOne(
       { email },
-      { 
-        $set: { 
+      {
+        $set: {
           password: hashedPassword,
           updatedAt: new Date()
         }
@@ -45,7 +49,7 @@ export class Admin {
   static async verifyPassword(email, password) {
     const admin = await this.findByEmail(email);
     if (!admin) return false;
-    
+
     return await bcrypt.compare(password, admin.password);
   }
 }
