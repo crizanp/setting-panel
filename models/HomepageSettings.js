@@ -1,6 +1,5 @@
 // model/HomepageSettings.js
 
-
 import clientPromise from '../lib/mongodb';
 
 export class HomepageSettings {
@@ -28,6 +27,8 @@ export class HomepageSettings {
       hero: {
         title: "Welcome to Our Platform",
         description: "Discover amazing features and services that will transform your experience.",
+        image: null, // Hero image URL
+        imageAlt: "Hero image", // Alt text for accessibility
         features: [
           "Fast and Reliable",
           "User-Friendly Interface", 

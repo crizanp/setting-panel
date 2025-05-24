@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+'use client';
+
+import { useRouter } from 'next/router'; // Use 'next/navigation' if you're using Next.js 13+ app directory
 import { 
   Home, 
   Settings, 
@@ -71,9 +73,10 @@ const StatsCard = ({ icon: Icon, title, value, color = "blue" }) => {
 };
 
 export default function Dashboard() {
+  const router = useRouter();
+
   const handleSettingClick = (settingName) => {
-    console.log(`Navigate to ${settingName} settings`);
-    // Add your navigation logic here
+    router.push(`/${settingName}`);
   };
 
   const settingsCards = [
@@ -132,6 +135,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Settings Section */}
         <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Settings</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {settingsCards.map((setting) => (
               <SettingsCard
@@ -149,34 +153,28 @@ export default function Dashboard() {
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200" onClick={() => handleSettingClick("default")}>
               <div className="text-center">
                 <Settings className="w-8 h-8 text-gray-600 mx-auto mb-2" />
                 <p className="text-sm font-medium text-gray-900">System Settings</p>
               </div>
             </Card>
-            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200" onClick={() => handleSettingClick("adsense")}>
               <div className="text-center">
                 <DollarSign className="w-8 h-8 text-gray-600 mx-auto mb-2" />
                 <p className="text-sm font-medium text-gray-900">Ad Management</p>
               </div>
             </Card>
-            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200" onClick={() => handleSettingClick("analytics")}>
               <div className="text-center">
                 <BarChart3 className="w-8 h-8 text-gray-600 mx-auto mb-2" />
                 <p className="text-sm font-medium text-gray-900">View Analytics</p>
               </div>
             </Card>
-            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
+            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200" onClick={() => handleSettingClick("footer")}>
               <div className="text-center">
                 <Layout className="w-8 h-8 text-gray-600 mx-auto mb-2" />
                 <p className="text-sm font-medium text-gray-900">Content Manager</p>
-              </div>
-            </Card>
-            <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200">
-              <div className="text-center">
-                <Sliders className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-                <p className="text-sm font-medium text-gray-900">Advanced Config</p>
               </div>
             </Card>
           </div>
