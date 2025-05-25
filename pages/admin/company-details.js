@@ -9,6 +9,8 @@ export default function CompanyDetails() {
     companyName: '',
     logo: null,
     logoPublicId: null,
+    blackLogo: null,
+    blackLogoPublicId: null,
     favicon: null,
     faviconPublicId: null,
     socialLinks: {
@@ -20,7 +22,11 @@ export default function CompanyDetails() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState({ logo: false, favicon: false });
+  const [uploading, setUploading] = useState({ 
+    logo: false, 
+    blackLogo: false, 
+    favicon: false 
+  });
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -87,14 +93,18 @@ export default function CompanyDetails() {
           [imageType]: data.data.url,
           [`${imageType}PublicId`]: data.data.publicId
         }));
-        setMessage({ type: 'success', text: `${imageType} uploaded successfully` });
+        
+        const displayName = imageType === 'blackLogo' ? 'black logo' : imageType;
+        setMessage({ type: 'success', text: `${displayName} uploaded successfully` });
       } else {
         const error = await response.json();
-        setMessage({ type: 'error', text: error.error || `Failed to upload ${imageType}` });
+        const displayName = imageType === 'blackLogo' ? 'black logo' : imageType;
+        setMessage({ type: 'error', text: error.error || `Failed to upload ${displayName}` });
       }
     } catch (error) {
       console.error('Upload error:', error);
-      setMessage({ type: 'error', text: `Failed to upload ${imageType}` });
+      const displayName = imageType === 'blackLogo' ? 'black logo' : imageType;
+      setMessage({ type: 'error', text: `Failed to upload ${displayName}` });
     } finally {
       setUploading(prev => ({ ...prev, [imageType]: false }));
     }
@@ -124,11 +134,14 @@ export default function CompanyDetails() {
           [imageType]: null,
           [`${imageType}PublicId`]: null
         }));
-        setMessage({ type: 'success', text: `${imageType} removed successfully` });
+        
+        const displayName = imageType === 'blackLogo' ? 'black logo' : imageType;
+        setMessage({ type: 'success', text: `${displayName} removed successfully` });
       }
     } catch (error) {
       console.error('Remove error:', error);
-      setMessage({ type: 'error', text: `Failed to remove ${imageType}` });
+      const displayName = imageType === 'blackLogo' ? 'black logo' : imageType;
+      setMessage({ type: 'error', text: `Failed to remove ${displayName}` });
     }
   };
 
@@ -172,6 +185,46 @@ export default function CompanyDetails() {
     );
   }
 
+  const ImageUploadSection = ({ imageType, label, currentImage, description, previewClass }) => (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {label}
+      </label>
+      {description && (
+        <p className="text-sm text-gray-500 mb-2">{description}</p>
+      )}
+      {currentImage && (
+        <div className="mb-3 flex items-center space-x-3">
+          <img 
+            src={currentImage} 
+            alt={label} 
+            className={previewClass || "h-20 w-auto object-contain border rounded"}
+          />
+          <button
+            type="button"
+            onClick={() => handleRemoveImage(imageType)}
+            className="text-red-600 hover:text-red-800 text-sm px-3 py-1 border border-red-200 rounded hover:bg-red-50"
+          >
+            Remove
+          </button>
+        </div>
+      )}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleImageUpload(e.target.files[0], imageType)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        disabled={uploading[imageType]}
+      />
+      {uploading[imageType] && (
+        <p className="text-sm text-blue-600 mt-1 flex items-center">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+          Uploading...
+        </p>
+      )}
+    </div>
+  );
+
   return (
     <AdminLayout>
       <div className="max-w-4xl mx-auto">
@@ -204,67 +257,60 @@ export default function CompanyDetails() {
             />
           </div>
 
-          {/* Logo Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Company Logo
-            </label>
-            {details.logo && (
-              <div className="mb-3">
-                <img 
-                  src={details.logo} 
-                  alt="Company Logo" 
-                  className="h-20 w-auto object-contain border rounded"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage('logo')}
-                  className="ml-2 text-red-600 hover:text-red-800 text-sm"
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e.target.files[0], 'logo')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              disabled={uploading.logo}
+          {/* Logo Uploads Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Primary Logo */}
+            <ImageUploadSection
+              imageType="logo"
+              label="Primary Logo"
+              currentImage={details.logo}
+              description="Main company logo (typically used on light backgrounds)"
+              previewClass="h-20 w-auto object-contain border rounded bg-black p-2"
             />
-            {uploading.logo && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+
+            {/* Black/Dark Logo */}
+            <ImageUploadSection
+              imageType="blackLogo"
+              label="Black/Dark Logo"
+              currentImage={details.blackLogo}
+              description="Dark version of your logo (for use on light backgrounds or when a darker variant is needed)"
+              previewClass="h-20 w-auto object-contain border rounded bg-gray-100 p-2"
+            />
           </div>
 
-          {/* Favicon Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Favicon
-            </label>
-            {details.favicon && (
-              <div className="mb-3">
-                <img 
-                  src={details.favicon} 
-                  alt="Favicon" 
-                  className="h-8 w-8 object-contain border rounded"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage('favicon')}
-                  className="ml-2 text-red-600 hover:text-red-800 text-sm"
-                >
-                  Remove
-                </button>
+          {/* Logo Preview Comparison */}
+          {(details.logo || details.blackLogo) && (
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Logo Preview</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {details.logo && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-2">Primary Logo (on white)</p>
+                    <div className="bg-black border rounded p-4 flex items-center justify-center h-24">
+                      <img src={details.logo} alt="Primary Logo" className="max-h-16 w-auto object-contain" />
+                    </div>
+                  </div>
+                )}
+                {details.blackLogo && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-2">Black Logo (on white)</p>
+                    <div className="bg-white border rounded p-4 flex items-center justify-center h-24">
+                      <img src={details.blackLogo} alt="Black Logo" className="max-h-16 w-auto object-contain" />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e.target.files[0], 'favicon')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              disabled={uploading.favicon}
-            />
-            {uploading.favicon && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
-          </div>
+            </div>
+          )}
+
+          {/* Favicon Upload */}
+          <ImageUploadSection
+            imageType="favicon"
+            label="Favicon"
+            currentImage={details.favicon}
+            description="Small icon that appears in browser tabs (recommended: 32x32px or 16x16px)"
+            previewClass="h-8 w-8 object-contain border rounded"
+          />
 
           {/* Social Links */}
           <div>
@@ -333,9 +379,16 @@ export default function CompanyDetails() {
             <button
               type="submit"
               disabled={saving}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
             >
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </button>
           </div>
         </form>

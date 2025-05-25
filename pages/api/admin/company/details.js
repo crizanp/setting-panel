@@ -47,7 +47,16 @@ export default async function handler(req, res) {
     }
         
     if (req.method === 'PUT') {
-      const { companyName, logo, logoPublicId, favicon, faviconPublicId, socialLinks } = req.body;
+      const { 
+        companyName, 
+        logo, 
+        logoPublicId, 
+        blackLogo,
+        blackLogoPublicId,
+        favicon, 
+        faviconPublicId, 
+        socialLinks 
+      } = req.body;
 
       // Basic validation
       if (!companyName || !companyName.trim()) {
@@ -61,6 +70,8 @@ export default async function handler(req, res) {
         companyName: companyName.trim(),
         logo: logo || null,
         logoPublicId: logoPublicId || null,
+        blackLogo: blackLogo || null,
+        blackLogoPublicId: blackLogoPublicId || null,
         favicon: favicon || null,
         faviconPublicId: faviconPublicId || null,
         socialLinks: {
@@ -71,25 +82,34 @@ export default async function handler(req, res) {
         }
       };
 
-      // If logo was changed and old logo exists, delete the old one
-      if (currentDetails.logoPublicId && 
-          currentDetails.logoPublicId !== detailsData.logoPublicId &&
-          detailsData.logoPublicId) {
-        try {
-          await deleteFromCloudinary(currentDetails.logoPublicId);
-        } catch (error) {
-          console.warn('Failed to delete old logo:', error);
+      // Clean up old images if they were changed
+      const imagesToCleanup = [
+        { 
+          current: currentDetails.logoPublicId, 
+          new: detailsData.logoPublicId, 
+          type: 'logo' 
+        },
+        { 
+          current: currentDetails.blackLogoPublicId, 
+          new: detailsData.blackLogoPublicId, 
+          type: 'black logo' 
+        },
+        { 
+          current: currentDetails.faviconPublicId, 
+          new: detailsData.faviconPublicId, 
+          type: 'favicon' 
         }
-      }
+      ];
 
-      // If favicon was changed and old favicon exists, delete the old one
-      if (currentDetails.faviconPublicId && 
-          currentDetails.faviconPublicId !== detailsData.faviconPublicId &&
-          detailsData.faviconPublicId) {
-        try {
-          await deleteFromCloudinary(currentDetails.faviconPublicId);
-        } catch (error) {
-          console.warn('Failed to delete old favicon:', error);
+      for (const image of imagesToCleanup) {
+        if (image.current && 
+            image.current !== image.new && 
+            image.new) {
+          try {
+            await deleteFromCloudinary(image.current);
+          } catch (error) {
+            console.warn(`Failed to delete old ${image.type}:`, error);
+          }
         }
       }
 

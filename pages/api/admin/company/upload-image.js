@@ -36,13 +36,74 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Get image type from query parameter (logo or favicon)
+    // Get image type from query parameter
     const imageType = req.query.type || 'logo';
-    const folder = imageType === 'favicon' ? 'company-favicons' : 'company-logos';
+    
+    // Determine the appropriate folder based on image type
+    let folder;
+    switch (imageType) {
+      case 'blackLogo':
+        folder = 'company-logos/black';
+        break;
+      case 'logo':
+        folder = 'company-logos/primary';
+        break;
+      case 'favicon':
+        folder = 'company-favicons';
+        break;
+      default:
+        folder = 'company-logos';
+    }
 
-    // Upload to Cloudinary
-    const result = await uploadToCloudinary(req.file.buffer, folder);
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({ 
+        error: 'Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.' 
+      });
+    }
 
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (req.file.size > maxSize) {
+      return res.status(400).json({ 
+        error: 'File too large. Maximum size is 5MB.' 
+      });
+    }
+
+    // Set transformation options based on image type
+    let transformOptions = {
+      quality: 'auto:good',
+      fetch_format: 'auto'
+    };
+
+    // Apply specific transformations for different image types
+    switch (imageType) {
+      case 'logo':
+      case 'blackLogo':
+        transformOptions = {
+          ...transformOptions,
+          width: 800,
+          height: 400,
+          crop: 'limit',
+          quality: 'auto:best'
+        };
+        break;
+      case 'favicon':
+        transformOptions = {
+          ...transformOptions,
+          width: 64,
+          height: 64,
+          crop: 'fill',
+          gravity: 'center'
+        };
+        break;
+    }
+
+    // Upload to Cloudinary with transformations
+    const result = await uploadToCloudinary(req.file.buffer, folder, transformOptions);
+
+    // Return success response with image details
     res.status(200).json({
       success: true,
       data: {
@@ -50,14 +111,27 @@ export default async function handler(req, res) {
         publicId: result.public_id,
         width: result.width,
         height: result.height,
-        format: result.format
+        format: result.format,
+        bytes: result.bytes,
+        folder: folder,
+        imageType: imageType
       }
     });
 
   } catch (error) {
     handleUploadError(error, req, res, () => {
       console.error('Image upload error:', error);
-      res.status(500).json({ error: 'Failed to upload image' });
+      
+      // Provide more specific error messages
+      if (error.message && error.message.includes('File too large')) {
+        res.status(400).json({ error: 'Image file is too large. Please use an image under 5MB.' });
+      } else if (error.message && error.message.includes('Invalid image')) {
+        res.status(400).json({ error: 'Invalid image file. Please upload a valid image.' });
+      } else if (error.http_code === 400) {
+        res.status(400).json({ error: 'Invalid image format or corrupted file.' });
+      } else {
+        res.status(500).json({ error: 'Failed to upload image. Please try again.' });
+      }
     });
   }
 }
