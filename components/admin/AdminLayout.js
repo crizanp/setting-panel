@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 export default function AdminLayout({ children }) {
@@ -85,7 +86,7 @@ export default function AdminLayout({ children }) {
         <div className="w-64 bg-white shadow-sm min-h-screen">
           <nav className="mt-5 px-2">
             <div className="space-y-1">
-              <a
+              <Link
                 href="/admin"
                 className={`block px-2 py-2 text-sm font-medium rounded-md ${
                   router.pathname === '/admin' 
@@ -94,8 +95,8 @@ export default function AdminLayout({ children }) {
                 }`}
               >
                 Dashboard
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/change-password"
                 className={`block px-2 py-2 text-sm font-medium rounded-md ${
                   router.pathname === '/admin/change-password' 
@@ -104,8 +105,8 @@ export default function AdminLayout({ children }) {
                 }`}
               >
                 Change Password
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/company-details"
                 className={`block px-2 py-2 text-sm font-medium rounded-md ${
                   router.pathname === '/admin/company-details' 
@@ -113,8 +114,8 @@ export default function AdminLayout({ children }) {
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                Comapany Details
-              </a>
+                Company Details
+              </Link>
             </div>
           </nav>
         </div>
