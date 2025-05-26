@@ -50,12 +50,35 @@ export default function LoginForm() {
     }
   };
 
+  const redirectToAdmin = async () => {
+    console.log('Attempting redirect to /admin');
+    
+    try {
+      // Method 1: Try Next.js router
+      await router.push('/admin');
+      console.log('Router.push successful');
+    } catch (routerError) {
+      console.log('Router.push failed:', routerError);
+      
+      // Method 2: Fallback to window.location
+      try {
+        window.location.href = '/admin';
+      } catch (locationError) {
+        console.log('window.location.href failed:', locationError);
+        
+        // Method 3: Last resort - replace
+        window.location.replace('/admin');
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrors({});
 
     console.log('Attempting login with:', { email: formData.email });
+    console.log('Environment:', process.env.NODE_ENV);
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -73,17 +96,28 @@ export default function LoginForm() {
       if (response.ok && data.token) {
         console.log('Login successful, setting token and redirecting');
         
-        // Set cookie with proper options
-        Cookies.set('token', data.token, { 
+        // Set cookie with comprehensive options
+        const cookieOptions = {
           expires: 7,
-          secure: process.env.NODE_ENV === 'production',
+          path: '/',
           sameSite: 'lax'
-        });
+        };
         
-        // Force a small delay to ensure cookie is set
+        // Only set secure in production with HTTPS
+        if (process.env.NODE_ENV === 'production') {
+          cookieOptions.secure = true;
+        }
+        
+        console.log('Setting cookie with options:', cookieOptions);
+        Cookies.set('token', data.token, cookieOptions);
+        
+        // Verify cookie was set
+        const setCookie = Cookies.get('token');
+        console.log('Cookie verification:', setCookie ? 'Cookie set successfully' : 'Cookie not set');
+        
+        // Redirect with a slight delay to ensure cookie is processed
         setTimeout(() => {
-          console.log('Redirecting to /admin');
-          router.push('/admin');
+          redirectToAdmin();
         }, 100);
         
       } else {
@@ -144,8 +178,6 @@ export default function LoginForm() {
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
-          
-         
         </Card>
       </div>
     </div>
