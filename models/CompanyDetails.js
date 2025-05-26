@@ -45,10 +45,17 @@ export class CompanyDetails {
         linkedin: ""
       },
       
+      // Basic SEO Settings
+      seo: {
+        title: "",
+        description: "",
+        keywords: ""
+      },
+      
       // Metadata
       createdAt: new Date(),
       updatedAt: new Date(),
-      version: "2.0" // Adding version for future migrations
+      version: "2.1" // Updated version for basic SEO support
     };
 
     const result = await db.collection('company_details').insertOne(defaultDetails);
@@ -73,7 +80,7 @@ export class CompanyDetails {
       active: true,
       updatedBy: adminEmail,
       updatedAt: new Date(),
-      version: "2.0"
+      version: "2.1"
     };
 
     const result = await db.collection('company_details').insertOne(newDetails);
@@ -103,6 +110,13 @@ export class CompanyDetails {
         instagram: this.validateUrl(data.socialLinks?.instagram) || "",
         twitter: this.validateUrl(data.socialLinks?.twitter) || "",
         linkedin: this.validateUrl(data.socialLinks?.linkedin) || ""
+      },
+      
+      // Basic SEO validation
+      seo: {
+        title: data.seo?.title?.trim() || "",
+        description: data.seo?.description?.trim() || "",
+        keywords: data.seo?.keywords?.trim() || ""
       }
     };
 
@@ -174,7 +188,8 @@ export class CompanyDetails {
       logo: details.logo,
       blackLogo: details.blackLogo,
       favicon: details.favicon,
-      socialLinks: details.socialLinks
+      socialLinks: details.socialLinks,
+      seo: details.seo
     };
   }
 

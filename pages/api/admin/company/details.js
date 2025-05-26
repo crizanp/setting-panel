@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       const details = await CompanyDetails.getDetails();
       
       // Set cache headers for better performance
-      res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+      res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=600');
       
       return res.status(200).json({ success: true, data: details });
     }
