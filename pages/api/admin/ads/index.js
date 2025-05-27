@@ -22,28 +22,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Verify admin authentication for all requests
-    const token = getTokenFromRequest(req);
-    const decoded = verifyToken(token);
-        
-    if (!decoded) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const admin = await Admin.findByEmail(decoded.email);
-    if (!admin) {
-      return res.status(401).json({ error: 'Admin not found' });
-    }
-
     if (req.method === 'GET') {
-      // Get all advertisements with filters
-      const { 
-        page = 1, 
-        limit = 20, 
-        status, 
-        active, 
+      // Get all advertisements with filters - NO AUTHENTICATION REQUIRED
+      const {
+        page = 1,
+        limit = 20,
+        status,
+        active,
         type,
-        campaignName 
+        campaignName
       } = req.query;
 
       const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -56,13 +43,13 @@ export default async function handler(req, res) {
       if (campaignName) filters.campaignName = new RegExp(campaignName, 'i');
 
       const result = await Advertisement.getAllAds(
-        parseInt(limit), 
-        skip, 
+        parseInt(limit),
+        skip,
         filters
       );
 
-      return res.status(200).json({ 
-        success: true, 
+      return res.status(200).json({
+        success: true,
         data: result.ads,
         pagination: {
           page: parseInt(page),
@@ -73,21 +60,34 @@ export default async function handler(req, res) {
       });
     }
 
+    // For POST, PUT, DELETE requests - verify admin authentication
+    const token = getTokenFromRequest(req);
+    const decoded = verifyToken(token);
+       
+    if (!decoded) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const admin = await Admin.findByEmail(decoded.email);
+    if (!admin) {
+      return res.status(401).json({ error: 'Admin not found' });
+    }
+
     if (req.method === 'POST') {
       // Create new advertisement
       const adData = req.body;
 
       // Validate required fields
       if (!adData.title || !adData.src) {
-        return res.status(400).json({ 
-          error: 'Title and media source are required' 
+        return res.status(400).json({
+          error: 'Title and media source are required'
         });
       }
 
       const newAd = await Advertisement.createAd(adData, admin.email);
-      
-      return res.status(201).json({ 
-        success: true, 
+     
+      return res.status(201).json({
+        success: true,
         data: newAd,
         message: 'Advertisement created successfully'
       });
@@ -96,9 +96,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Admin ads API error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Internal server error',
-      details: error.message 
+      details: error.message
     });
   }
 }
