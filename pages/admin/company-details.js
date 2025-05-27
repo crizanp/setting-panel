@@ -420,7 +420,7 @@ export default function CompanyDetails() {
                   maxLength={60}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Recommended: 50-60 characters. Leave empty to use default: "{details.companyName} - Welcome"
+                  Recommended: 50-60 characters. Leave empty to use default: {details.companyName} - Welcome
                 </p>
               </div>
 
