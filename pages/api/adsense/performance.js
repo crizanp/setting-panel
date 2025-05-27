@@ -1,6 +1,6 @@
-import { AdSense } from '../../../../models/AdSense';
-import { verifyToken, getTokenFromRequest } from '../../../../lib/auth';
-import { Admin } from '../../../../models/Admin';
+import { AdSense } from '../../../models/AdSense';
+import { verifyToken, getTokenFromRequest } from '../../../lib/auth';
+import { Admin } from '../../../models/Admin';
 
 function setCorsHeaders(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
