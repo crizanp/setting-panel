@@ -114,7 +114,7 @@ export default function Dashboard() {
       icon: DollarSign,
       title: "AdSense Setup",
       description: "Configure Google AdSense integration and ad placements",
-      key: "adsense"
+      key: "/admin/adsencepanel"
     },
     {
       icon: Settings,
