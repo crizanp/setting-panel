@@ -467,7 +467,7 @@ export default function CompanyDetails() {
                     {details.seo?.title || `${details.companyName} - Welcome`}
                   </div>
                   <div className="text-green-700 text-sm">
-                    yoursite.com
+                    https://www.foxbeep.com
                   </div>
                   <div className="text-gray-600 text-sm mt-1">
                     {details.seo?.description || `Welcome to ${details.companyName}. Discover our products and services.`}

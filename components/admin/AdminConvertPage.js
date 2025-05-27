@@ -451,7 +451,7 @@ const ConverterAdminPanel = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">How to Convert Section</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                   <input
@@ -498,7 +498,7 @@ const ConverterAdminPanel = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div>
                 {renderImageUpload('ways', 'Process Image')}
               </div>
@@ -506,7 +506,7 @@ const ConverterAdminPanel = () => {
           </div>
 
           {/* Features Section */}
-          <div className="bg-white rounded-lg shadow p-6">
+          {/* <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Features Section</h2>
             <div className="space-y-4">
               <div>
@@ -546,7 +546,7 @@ const ConverterAdminPanel = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Save Button */}
           <div className="flex justify-end">

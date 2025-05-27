@@ -55,7 +55,8 @@ export default async function handler(req, res) {
         blackLogoPublicId,
         favicon, 
         faviconPublicId, 
-        socialLinks 
+        socialLinks,
+        seo  // ADD THIS - Extract SEO data from request body
       } = req.body;
 
       // Basic validation
@@ -79,6 +80,12 @@ export default async function handler(req, res) {
           instagram: socialLinks?.instagram?.trim() || "",
           twitter: socialLinks?.twitter?.trim() || "",
           linkedin: socialLinks?.linkedin?.trim() || ""
+        },
+        // ADD THIS - Include SEO data in the update
+        seo: {
+          title: seo?.title?.trim() || "",
+          description: seo?.description?.trim() || "",
+          keywords: seo?.keywords?.trim() || ""
         }
       };
 

@@ -533,7 +533,7 @@ const AdminHomepagePanel = () => {
           </div>
 
           {/* Newsletter Section */}
-          <div className="bg-white rounded-lg shadow p-6">
+          {/* <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Newsletter Section</h2>
 
             <div className="space-y-4">
@@ -579,7 +579,7 @@ const AdminHomepagePanel = () => {
                 </>
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* Save Button */}
           <div className="flex justify-end">

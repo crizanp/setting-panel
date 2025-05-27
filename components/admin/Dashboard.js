@@ -86,29 +86,29 @@ export default function Dashboard() {
       description: "Configure homepage layout, hero section, and featured content",
       key: "homepage"
     },
-    {
-      icon: Wrench,
-      title: "Tools Page Settings",
-      description: "Manage tools display, categories, and tool configurations",
-      key: "tools"
-    },
+    // {
+    //   icon: Wrench,
+    //   title: "Tools Page Settings",
+    //   description: "Manage tools display, categories, and tool configurations",
+    //   key: "tools"
+    // },
     {
       icon: RefreshCw,
       title: "Convert Page Settings",
       description: "Setup conversion tools, formats, and processing options",
       key: "convert"
     },
-    {
-      icon: Layout,
-      title: "Footer Settings",
-      description: "Edit footer links, contact information, and social media",
-      key: "footer"
-    },
+    // {
+    //   icon: Layout,
+    //   title: "Footer Settings",
+    //   description: "Edit footer links, contact information, and social media",
+    //   key: "footer"
+    // },
     {
       icon: Sliders,
       title: "Default Settings",
       description: "Configure global defaults, system preferences, and general options",
-      key: "default"
+      key: "/admin/company-details"
     },
     {
       icon: DollarSign,
@@ -120,14 +120,14 @@ export default function Dashboard() {
       icon: Settings,
       title: "Default Ads",
       description: "Manage default advertisements and fallback ad content",
-      key: "defaultads"
+      key: "/admin/ads"
     },
-    {
-      icon: BarChart3,
-      title: "Analytics",
-      description: "Setup Google Analytics, tracking codes, and performance monitoring",
-      key: "analytics"
-    }
+    // {
+    //   icon: BarChart3,
+    //   title: "Analytics",
+    //   description: "Setup Google Analytics, tracking codes, and performance monitoring",
+    //   key: "analytics"
+    // }
   ];
 
   return (
@@ -150,7 +150,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="p-4 hover:shadow-lg cursor-pointer transition-shadow duration-200" onClick={() => handleSettingClick("default")}>
@@ -178,7 +178,7 @@ export default function Dashboard() {
               </div>
             </Card>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
