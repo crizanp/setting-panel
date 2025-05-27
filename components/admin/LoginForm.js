@@ -12,6 +12,7 @@ export default function LoginForm() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const router = useRouter();
 
   // Check if already logged in
@@ -115,22 +116,50 @@ export default function LoginForm() {
         const setCookie = Cookies.get('token');
         console.log('Cookie verification:', setCookie ? 'Cookie set successfully' : 'Cookie not set');
         
-        // Redirect with a slight delay to ensure cookie is processed
+        // Show success message first
+        setLoginSuccess(true);
+        setLoading(false);
+        
+        // Redirect after showing success message for 2 seconds
         setTimeout(() => {
           redirectToAdmin();
-        }, 100);
+        }, 2000);
         
       } else {
         console.log('Login failed:', data.message);
         setErrors({ general: data.message || 'Login failed' });
+        setLoading(false);
       }
     } catch (error) {
       console.error('Login error:', error);
       setErrors({ general: 'Network error. Please check your connection and try again.' });
-    } finally {
       setLoading(false);
     }
   };
+
+  // Show success message if login is successful
+  if (loginSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <Card>
+            <div className="text-center py-8">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Login Successful!</h3>
+              <p className="text-gray-600 mb-4">Proceeding to admin panel...</p>
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
