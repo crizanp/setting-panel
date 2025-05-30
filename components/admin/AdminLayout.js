@@ -65,6 +65,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin', label: 'Dashboard', icon: '📊' },
     { href: '/admin/company-details', label: 'Company Details', icon: '🏢' },
     { href: '/admin/change-password', label: 'Change Password', icon: '🔒' },
+    { href: '/admin/create-admin', label: 'Create Admin', icon: '👥' },
   ];
 
   return (
